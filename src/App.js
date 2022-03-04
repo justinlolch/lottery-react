@@ -9,6 +9,7 @@ function App() {
   const [balance, setBalance] = useState(0);
   const [value, setValue] = useState();
   const [message, setMessage] = useState();
+  const [pickMessage, setPickMessage] = useState();
 
   const getManagerPlayersBalance = async () => {
     const returnManager = await lottery.methods.manager().call();
@@ -24,14 +25,26 @@ function App() {
 
     const accounts = await web3.eth.getAccounts();
 
-    setMessage('Waiting on transcation...')
+    setMessage("Waiting on transcation...");
 
     await lottery.methods.enter().send({
       from: accounts[0],
       value: web3.utils.toWei(value, "ether"),
     });
 
-    setMessage('You have been entered!')
+    setMessage("You have been entered!");
+  };
+
+  const onClickPickWinner = async () => {
+    const accounts = await web3.eth.getAccounts();
+
+    setPickMessage("Waiting on transcation...");
+
+    await lottery.methods.pickWinner().send({
+      from: accounts[0],
+    });
+
+    setPickMessage("A winner has been picked!");
   };
 
   useEffect(() => {
@@ -58,9 +71,14 @@ function App() {
         <button>Enter</button>
       </form>
 
-      <hr/>
+      <hr />
 
       <h1>{message}</h1>
+
+      <h4>Time to pick a winner?</h4>
+      <button onClick={onClickPickWinner}>Pick Winner</button>
+
+      <h1>{pickMessage}</h1>
 
     </div>
   );
